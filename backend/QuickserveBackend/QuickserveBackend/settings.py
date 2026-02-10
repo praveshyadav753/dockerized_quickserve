@@ -18,7 +18,7 @@ SECRET_KEY = 'django-insecure-^gtlmn@1mdusk5xjx(w&_$0)l*y(402+g@$9rj^@&ai&&rr0(^
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["0.0.0.0"]
 
 
 # Application definition
@@ -60,7 +60,7 @@ MIDDLEWARE = [
 ]
 # CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5174","http://localhost:5173", "https://quickserve-pi.vercel.app"
+    "http://localhost:5174","http://localhost:5173", "https://quickserve-pi.vercel.app","http://0.0.0.0:8000"
 ]
 CORS_ALLOW_CREDENTIALS = True
 REST_FRAMEWORK = {

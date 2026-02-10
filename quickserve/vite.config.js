@@ -14,6 +14,11 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/api/, ""),
       },
     },
+    host: true, // required to be accessible in the container network
+    port: 5173,
+    watch: {
+      usePolling: true, // enables file watching in certain environments like WSL
+    },
   },
   plugins: [react(),
   tailwindcss(), ],
