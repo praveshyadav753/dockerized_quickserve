@@ -17,7 +17,7 @@ class AddServiceViewTest(APITestCase):
         # Create category and subcategory
         self.category = Category.objects.create(category_name='Test Cat')
         self.subcategory = Subcategory.objects.create(
-            subcategory_name='Test Sub', category_id=self.category
+            subcategory_name='Test Sub', category=self.category
         )
         
         # Setup API client and URL
@@ -58,7 +58,7 @@ class AddServiceViewTest(APITestCase):
 
     def test_add_service_no_business(self):
         """Test forbidden access if user has no business."""
-        user_no_biz = User.objects.create_user(username='nobiz', password='password')
+        user_no_biz = User.objects.create_user(username='nobiz', password='password',email='nobiz@example.com')
         self.client.force_authenticate(user=user_no_biz)
         
         response = self.client.post(self.url, self.valid_payload, format='json')
