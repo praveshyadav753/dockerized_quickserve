@@ -34,7 +34,7 @@ jobs:
 
             echo "📄 Compose file:"
             ls -la
-            [ -f docker-compose.yml ] || { echo "❌ docker-compose.yml NOT FOUND"; exit 1; }
+            [ -f compose.yml ] || { echo "❌ compose.yml NOT FOUND"; exit 1; }
 
             echo "🐳 Docker:"
             docker --version
