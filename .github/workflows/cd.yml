@@ -30,7 +30,7 @@ jobs:
             
             # 2. If directory doesn't exist, clone it. Otherwise, pull latest.
             if [ ! -d "$APP_DIR" ]; then
-              echo "Directory not found. Cloning repo..."
+              echo "Directory not found. Cloning repo...."
               git clone https://github.com/praveshyadav753/dockerized_quickserve.git "$APP_DIR"
             fi
             
