@@ -12,12 +12,12 @@ class AddServiceViewTest(APITestCase):
     def setUp(self):
         # Create user and business
         self.user = User.objects.create_user(username='testuser', password='testpassword')
-        self.business = Business.objects.create(user=self.user, name='Test Business')
+        self.business = Business.objects.create(user=self.user, business_name='Test Business')
         
         # Create category and subcategory
-        self.category = Category.objects.create(name='Test Cat')
+        self.category = Category.objects.create(category_name='Test Cat')
         self.subcategory = Subcategory.objects.create(
-            name='Test Sub', category_id=self.category
+            subcategory_name='Test Sub', category_id=self.category
         )
         
         # Setup API client and URL
