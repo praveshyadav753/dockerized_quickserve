@@ -1,7 +1,6 @@
 name: Continuous Deployment
 
 on:
-  # This makes CD wait for CI to finish successfully
   workflow_run:
     workflows: ["Continuous Integration"]
     types:
@@ -9,36 +8,46 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
-    # Only deploy if the CI build actually passed
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
-    
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
+    runs-on: ubuntu-latest
 
-      - name: Deploy to Server via SSH
+    steps:
+      - name: Deploy to EC2 via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
+          username: ubuntu
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          # These commands run ON YOUR SERVER
           script: |
             set -euxo pipefail
 
-            echo "🚀 Starting deployment..."
-            cd /home/${{ secrets.SERVER_USER }}/dockerized_quickserve
+            export PATH=/usr/bin:/usr/local/bin:$PATH
 
-            # git pull origin main
-            echo "📥 Pull latest images"
+            echo "👤 User:"
+            whoami
+
+            echo "📂 Home:"
+            pwd
+            ls -la /home/ubuntu
+
+            cd /home/ubuntu/dockerized_quickserve
+
+            echo "📄 Compose file:"
+            ls -la
+            [ -f docker-compose.yml ] || { echo "❌ docker-compose.yml NOT FOUND"; exit 1; }
+
+            echo "🐳 Docker:"
+            docker --version
+            docker compose version || docker-compose version
+
+            echo "📥 Pulling images"
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/qs_backend_dev:latest
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/frontend-dev:latest
 
-            echo "🛑 Stopping old containers"
-            docker compose down
+            echo "🛑 Stopping containers"
+            docker compose down || docker-compose down
 
-            echo "▶️ Starting new containers"
-            docker compose up -d
+            echo "▶️ Starting containers"
+            docker compose up -d || docker-compose up -d
 
             echo "✅ Deployment complete"
