@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
 from django.contrib.auth.models import User
 from core.models import Category, Subcategory
-from .models import Business, Service
+from business.models import Business, Service
 
 class AddServiceViewTest(APITestCase):
     def setUp(self):
