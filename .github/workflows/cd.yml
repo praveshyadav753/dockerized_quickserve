@@ -27,14 +27,14 @@ jobs:
             whoami
 
             echo "📂 Home:"
-            pwd
-            ls -la /home/ubuntu
+            
+            
 
             cd /home/ubuntu/dockerized_quickserve
 
             echo "📄 Compose file:"
             ls -la
-            [ -f compose.yml ] || { echo "❌ compose.yml NOT FOUND"; exit 1; }
+            [ -f compose.yml ] || { echo "❌ compose.yaml NOT FOUND"; exit 1; }
 
             echo "🐳 Docker:"
             docker --version
