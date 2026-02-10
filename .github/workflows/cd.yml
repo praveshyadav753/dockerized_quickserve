@@ -26,10 +26,10 @@ jobs:
           # These commands run ON YOUR SERVER
           script: |
             # 1. Define the app directory
-            APP_DIR="~/QuickServe_App"
+            APP_DIR="~/dockerized_quickserve"
             
-            # 2. If directory doesn't exist, clone it. Otherwise, pull latest.
-            if [ ! -d "$APP_DIR" ]; then
+            # 2. If directory doesn't exist, clone it. Otherwise, pull latest..
+            if [ ! -d "$dockerized_quickserve" ]; then
               echo "Directory not found. Cloning repo...."
               git clone https://github.com/praveshyadav753/dockerized_quickserve.git "$APP_DIR"
             fi
