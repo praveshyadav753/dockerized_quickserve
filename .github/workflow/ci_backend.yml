@@ -1,13 +1,79 @@
-name: CI Pipeline
+name: Continuous Integration
 
 on:
   push:
-    branches:
-      - main
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
-  build:
+  # JOB 1: Test and Lint (The "Quality Gate")
+  test-and-lint:
     runs-on: ubuntu-latest
-
     steps:
-    
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # --- BACKEND TESTING ---
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install Backend Dependencies
+        run: |
+          cd backend
+          python -m pip install --upgrade pip
+          pip install -r QuickserveBackend/requirements.txt
+
+      - name: Run Django Tests
+        run: |
+          cd backend/QuickserveBackend
+          # Running Django tests
+          python manage.py test
+
+      # --- FRONTEND TESTING ---
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install Frontend Dependencies
+        run: |
+          cd quickserve
+          npm install
+
+      # - name: Run Frontend Tests
+      #   run: |
+      #     cd quickserve
+      #     # CI=true makes it run once instead of watching
+      #     CI=true npm test
+
+  # JOB 2: Build and Push (Only runs if Job 1 passes)
+  build-and-push:
+    needs: test-and-lint
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' # Only push to DockerHub on actual merge/push
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build & Push Backend
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/qs_backend_dev:latest
+
+      - name: Build & Push Frontend
+        uses: docker/build-push-action@v5
+        with:
+          context: ./quickserve
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/frontend-dev:latest

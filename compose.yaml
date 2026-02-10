@@ -57,8 +57,8 @@ services:
       context: ./quickserve
       dockerfile: Dockerfile
     # container_name: react_frontend
-    ports:
-      - "5173:5173"
+      ports:
+        - "5173:5173"
     volumes:
       - ./quickserve:/app         # Live-sync React code
       - /app/node_modules       # Anonymous volume so Docker doesn't overwrite node_modules
