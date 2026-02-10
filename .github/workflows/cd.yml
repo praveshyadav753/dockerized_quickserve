@@ -45,9 +45,10 @@ jobs:
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/frontend-dev:latest
 
             echo "🛑 Stopping containers"
-            docker compose down || docker-compose down
+            docker compose down
 
             echo "▶️ Starting containers"
-            docker compose up -d || docker-compose up -d
+            docker compose up -d
 
             echo "✅ Deployment complete"
+
