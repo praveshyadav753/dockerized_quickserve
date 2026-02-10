@@ -25,8 +25,25 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           # These commands run ON YOUR SERVER
           script: |
-            cd /home/${{ secrets.SERVER_USER }}/QuickServe_App
-            git pull origin main
+            # 1. Define the app directory
+            APP_DIR="~/QuickServe_App"
+            
+            # 2. If directory doesn't exist, clone it. Otherwise, pull latest.
+            if [ ! -d "$APP_DIR" ]; then
+              echo "Directory not found. Cloning repo..."
+              git clone https://github.com/praveshyadav753/dockerized_quickserve.git "$APP_DIR"
+            fi
+            
+            cd "$APP_DIR"
+            
+            # 3. Update the docker-compose.yml and other configs
+            git fetch --all
+            git reset --hard origin/main
+            
+            # 4. Refresh the containers
             docker compose pull
             docker compose up -d --remove-orphans
+            
+            # 5. Clean up old images to save AWS space
             docker image prune -f
+
