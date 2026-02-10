@@ -1,9 +1,12 @@
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 from core.models import Category, Subcategory
 from business.models import Business, Service
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 class AddServiceViewTest(APITestCase):
     def setUp(self):
