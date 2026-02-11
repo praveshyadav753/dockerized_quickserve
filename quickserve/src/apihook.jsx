@@ -56,7 +56,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 const apiClient = axios.create({
-  baseURL: "https://quickserve.pythonanywhere.com", // Django backend URL
+  // baseURL: "https://quickserve.pythonanywhere.com", // Django backend URL
+  baseURL: "http://65.0.201.89:8000",
   withCredentials: true, // Include cookies if needed
 });
 

@@ -8,6 +8,7 @@ on:
 
 jobs:
   deploy:
+    # Only run if the CI workflow was successful
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
 
@@ -18,37 +19,40 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ubuntu
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          # Recommended for debugging handshake issues
+          debug: true 
           script: |
             set -euxo pipefail
 
+            # Ensure Docker and Compose are in the path
             export PATH=/usr/bin:/usr/local/bin:$PATH
 
-            echo "👤 User:"
-            whoami
+            echo "👤 User: $(whoami)"
+            echo "📂 Home: $HOME"
 
-            echo "📂 Home:"
-            
-            
+          
 
-            cd /home/ubuntu/dockerized_quickserve
+            # Verify compose file exists
+            if [ ! -f compose.yaml ] ; then
+              echo "❌ No compose file found!"
+              exit 1
+            fi
 
-            echo "📄 Compose file:"
-            # ls -la
-            [ -f compose.yaml ] || { echo "❌ compose.yaml NOT FOUND"; exit 1; }
-
-            echo "🐳 Docker:"
+            echo "🐳 Docker Info:"
             docker --version
-            docker compose version || docker-compose version
+            docker compose version
 
-            echo "📥 Pulling images"
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/qs_backend_dev:latest
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/frontend-dev:latest
+            echo "📥 Pulling latest images"
+            # Log in to DockerHub if your images are private
+            echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+            
+            docker compose pull
 
-            echo "🛑 Stopping containers"
+            echo "🛑 Refreshing containers"
             docker compose down
-
-            echo "▶️ Starting containers"
             docker compose up -d
 
-            echo "✅ Deployment complete"
+            echo "🧹 Cleaning up old images"
+            docker image prune -f
 
+            echo "✅ Deployment complete"
