@@ -43,7 +43,7 @@ const NewService = () => {
   const fetchSubcategories = async (categoryId) => {
     try {
       const response = await fetch(
-        `https://quickserve.pythonanywhere.com/core/subcategory/${categoryId}/`
+        `http://65.0.201.89:8000/core/subcategory/${categoryId}/`
       );
       const result = await response.json();
       setSubcategories(result);

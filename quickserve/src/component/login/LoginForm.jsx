@@ -26,7 +26,7 @@ const Login = () => {
 
     try {
       const response = await axios.post(
-        "https://quickserve.pythonanywhere.com/auth/login/",
+        "http://65.0.201.89:8000/auth/login/",
         JSON.stringify(formData),
         {
           headers: { "Content-Type": "application/json" },
